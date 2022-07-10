@@ -28,7 +28,7 @@ module.exports = {
         '90vh': '90vh',
       },
       flex: {
-        0.7: '0.7 1 0%',
+        0.7: '0.7 1 0%', /* flex grow, flex shrink, flex basis*/
       },
       maxHeight: {
         370: '370px',
