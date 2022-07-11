@@ -1,25 +1,35 @@
 import React from 'react'
 import { GoogleLogin } from '@react-oauth/google';
-// import { useNavigate } from 'react-router-dom';
-// import { FcGoogle } from 'react-icons/fc';
+import { useNavigate } from 'react-router-dom';
 import shareVideo from "../assets/share.mp4";
 import logo from "../assets/logowhite.png";
 import jwt_decode from "jwt-decode";
+import { client } from "../sanity/client";
 
 const Login = () => {
 
+    const navigate = useNavigate();
     function googleLoginResponse(response){
-        localStorage.setItem("userToken", JSON.stringify(response.credential))
+        // Grab the token from the response object and decode it
         var decoded = jwt_decode(response.credential)
         const { email, name, picture, sub} = decoded
+        localStorage.setItem("subjectId", JSON.stringify(sub))
 
+        // destructure key info from the decoded token
         const document = {
             _id: sub,
-            type: 'user',
+            _type: 'user',
             userName: name,
             userImgUrl: picture,
             email: email
         }
+
+        // Update sanity db with the info
+        client.createIfNotExists(document)
+            // replace current entry in history stack with homepage("/")
+            // so when people click the back button on browser, they ...
+            // ... are taken to homepage instead of login page
+            .then(()=>{ navigate("/", {replace:true}) })
     }
 
     return (

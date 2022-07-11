@@ -49,7 +49,7 @@ module.exports = {
         secondaryColor: '#F0F0F0',
         blackOverlay: 'rgba(0, 0 ,0 ,0.7)',
       },
-      keyframes: {
+      keyframes: { 
         'slide-in': {
           '0%': {
             '-webkit-transform': 'translateX(-200px)',
