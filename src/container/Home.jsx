@@ -45,12 +45,12 @@ const Home = () => {
                         <img src={logo} alt="logo" className="w-28"/>
                     </Link>
                     <Link to={`user-profile/${user?._id}`}>
-                        <img src={user?.userImgUrl} alt={user?.userName} className="w-28"/>
+                        <img src={user?.userImgUrl} alt={user?.userName} className="w-9 h-9 rounded-full"/>
                     </Link>
                 </div>
                 { toggleSidebar && (
                 <div className="fixed w-4/5 bg-white h-screen overflow-y-auto shadow-mg z-10 animate-slide-in">
-                    <div className="absolute w-full flex justify-end items-center p-2" >
+                    <div className="absolute w-full flex justify-end items-center p-2">
                         <AiFillCloseCircle fontSize={30} className="cursor-pointer" onClick={()=>setToggleSidebar(false)}/>
                     </div>
                     <Sidebar closeToggle={setToggleSidebar} user={user && user}/>
