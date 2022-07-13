@@ -13,6 +13,7 @@ const Home = () => {
     const navigate = useNavigate();
     const [ toggleSidebar, setToggleSidebar ] = useState(false)
     const [ user, setUser ] = useState(null)
+    const scrollRef = useRef(null)
 
     // load id from localstorage if present
     const userInfo = localStorage.getItem("subjectId")
@@ -30,6 +31,11 @@ const Home = () => {
 
     },[userInfo, navigate ])
 
+    useEffect(()=>{
+        // move scroll to the top of the page
+        scrollRef.current.scrollTo(0,0)
+    },[])
+
     return (
         <div className="flex flex-col md:flex-row bg-gray-50 h-screen transition-height duration-75 ease-out">
             {/* Two sidebars one for mobile device one for large screens */}
@@ -45,7 +51,7 @@ const Home = () => {
                         <img src={logo} alt="logo" className="w-28"/>
                     </Link>
                     <Link to={`user-profile/${user?._id}`}>
-                        <img src={user?.userImgUrl} alt={user?.userName} className="w-9 h-9 rounded-full"/>
+                        <img src={user?.userImgUrl} alt={user?.userName} className="w-9 h-9 rounded-full border-solid border-2 border-black"/>
                     </Link>
                 </div>
                 { toggleSidebar && (
@@ -58,7 +64,7 @@ const Home = () => {
 
 
             </div>
-            <div className="pb-1 flex-1 h-screen overflow-y-scroll">
+            <div className="pb-1 flex-1 h-screen overflow-y-scroll" ref={scrollRef}>
                 <Routes>
                     <Route path="/user-profile/:userId" element={<UserProfile />} />
                     <Route path="/*" element={<Pins user={user & user}/>}/>
