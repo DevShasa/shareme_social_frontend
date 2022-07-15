@@ -9,3 +9,11 @@ body {
 #nicheki{
   border: 1px solid red !important;
 }
+
+.ficha-scrollbar::-webkit-scrollbar{
+  display:none /* hide for chrome safari and opera*/
+}
+.ficha-scrollbar{
+  -ms-overflow-style: none; /*Internet explorer and edge*/
+  scrollbar-width: none; /*Firefox*/
+}

@@ -3,3 +3,7 @@ export const userQuery =  (userId) =>{
     const sanity_query = `*[_type == "user" && _id == ${userId}]`;
     return sanity_query
 }
+
+export const fetchCategories = ()=>{
+    return `*[_type =="category"]`
+}
