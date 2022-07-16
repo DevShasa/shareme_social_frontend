@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, Link } from "react-router-dom";
 import { RiHome2Fill } from "react-icons/ri";
-import  { IoIosArrowForward } from "react-icons/io"
+// import  { IoIosArrowForward } from "react-icons/io"
 import logo from "../assets/logo.png"
 import { fetchCategories } from "../utils/sanityDataFetch";
 import { client } from "../sanity/client";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
 
 const isActiveStyle = "flex items-center px-5 gap-5  font-extrabold border-r-2 border-black  transition-all duration-200 ease-in-out capitalize";
 const isNotActiveStyle = "flex items-center px-5 gap-5  text-gray-500 hover:text-black   transition-all duration-200 ease-in-out capitalize";
@@ -50,16 +53,21 @@ const Sidebar = ({ closeToggle, user }) => {
                         <h3 className="mt-2 px-5 text-base 2xl:text-lg">Discover Categories</h3>
 
 
-                        {categories.length !== 0 && categories.map((category)=>(
-                            <NavLink key={category._id} className={({isActive})=>(isActive ? isActiveStyle : isNotActiveStyle)}
-                                to={`/category/${category.categoryTitle}`}
-                                onClick={handleCloseSidebar}
-                            >
-                                <img src={category.categoryImage} alt={category.categoryTitle} className="w-8 h-8 rounded-full shadow-sm"/>
-                                {category.categoryTitle}
-                            </NavLink>
-                        ))}
-
+                        {categories.length !== 0 
+                            ? (
+                                categories.map((category)=>(
+                                    <NavLink key={category._id} className={({isActive})=>(isActive ? isActiveStyle : isNotActiveStyle)}
+                                        to={`/category/${category.categoryTitle}`}
+                                        onClick={handleCloseSidebar}
+                                    >
+                                        <img src={category.categoryImage} alt={category.categoryTitle} className="w-8 h-8 rounded-full shadow-sm"/>
+                                        {category.categoryTitle}
+                                    </NavLink>))
+                            )
+                            : (
+                                <Skeleton count={12} className="m-2 p-2"/>
+                            )
+                    }
                     </div>
                 </div>
             </div>
