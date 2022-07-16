@@ -15,7 +15,10 @@ const Sidebar = ({ closeToggle, user }) => {
 
     useEffect(()=>{
         const query = fetchCategories();
-        client.fetch(query).then((data)=>console.log("CATEGORIES",data))
+        client.fetch(query).then((data)=>{
+            const dataMinusOther = data.filter(item =>item.categoryTitle !== "others")
+            setCategories(dataMinusOther)
+        })
     },[])
 
     const handleCloseSidebar = ()=>{
@@ -27,7 +30,7 @@ const Sidebar = ({ closeToggle, user }) => {
 
     return (
         <>
-            <div className="flex flex-col justify-between bg-white h-full min-w-210 overflow-y-scroll ficha-scrollbar" >
+            <div className="flex flex-col justify-between bg-white h-full min-w-210 overflow-y-scroll ficha-scrollbar">
                 <div className="flex flex-col">
                     {/* first child in flex-col container */}
                     <Link to="/" className="flex px-5 gap-2 my-6 pt-1 w-190 items-center"
@@ -45,6 +48,17 @@ const Sidebar = ({ closeToggle, user }) => {
                         </NavLink>
 
                         <h3 className="mt-2 px-5 text-base 2xl:text-lg">Discover Categories</h3>
+
+
+                        {categories.length !== 0 && categories.map((category)=>(
+                            <NavLink key={category._id} className={({isActive})=>(isActive ? isActiveStyle : isNotActiveStyle)}
+                                to={`/category/${category.categoryTitle}`}
+                                onClick={handleCloseSidebar}
+                            >
+                                <img src={category.categoryImage} alt={category.categoryTitle} className="w-8 h-8 rounded-full shadow-sm"/>
+                                {category.categoryTitle}
+                            </NavLink>
+                        ))}
 
                     </div>
                 </div>
