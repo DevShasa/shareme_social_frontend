@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, Link } from "react-router-dom";
 import { RiHome2Fill } from "react-icons/ri";
-// import  { IoIosArrowForward } from "react-icons/io"
+import  { IoIosArrowForward } from "react-icons/io"
 import logo from "../assets/logo.png"
 import { fetchCategories } from "../utils/sanityDataFetch";
 import { client } from "../sanity/client";
@@ -67,9 +67,22 @@ const Sidebar = ({ closeToggle, user }) => {
                             : (
                                 <Skeleton count={12} className="m-2 p-2"/>
                             )
-                    }
+                        }
                     </div>
                 </div>
+
+                {/* third child in a flex col container */}
+                { user && (
+                    <Link to={`/user-profile/${user._id}`}
+                        className="flex my-5 mb-3 gap-2 p-2 items-center bg-white rounded-lg shadow-lg mx-3"
+                        onClick={handleCloseSidebar}
+                    >
+                        <img src={user.userImgUrl}  alt={user.userName} className="w-10 h-10 rounded-full"/>
+                        <p>{user.userName}</p>
+                        <IoIosArrowForward />
+                    </Link>
+                )}
+
             </div>
         </>
     )

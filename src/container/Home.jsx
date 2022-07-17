@@ -15,7 +15,7 @@ const Home = () => {
     const [ user, setUser ] = useState(null)
     const scrollRef = useRef(null)
 
-    // load id from localstorage if present
+    // load id from localstorage, if nothing is in there it will return null 
     const userInfo = localStorage.getItem("subjectId")
 
     useEffect(()=>{
