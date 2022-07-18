@@ -43,6 +43,7 @@ const Home = () => {
                 {/* md = @media (min-width: 768px) */}
                 <Sidebar user={user && user}/> 
             </div>
+            
             <div className="flex flex-row md:hidden">
                 {/* md = @media (min-width: 768px) */}
                 <div className="p-2 w-full flex flex-row justify-between items-center shadow-md">
@@ -61,9 +62,9 @@ const Home = () => {
                     </div>
                     <Sidebar closeToggle={setToggleSidebar} user={user && user}/>
                 </div>)}
-
-
             </div>
+
+
             <div className="pb-1 flex-1 h-screen overflow-y-scroll" ref={scrollRef}>
                 <Routes>
                     <Route path="/user-profile/:userId" element={<UserProfile />} />
