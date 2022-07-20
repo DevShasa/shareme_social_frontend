@@ -63,7 +63,7 @@ function Pin({pin}) {
                             </a>
                         </div>
 
-                        {hasUserSavedMe() > 0
+                        {hasUserSavedMe() 
                             ? (<button 
                                 type="button" 
                                 className="bg-blue-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-lg outline-none hover:shadow-md"
