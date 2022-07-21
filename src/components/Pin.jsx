@@ -28,11 +28,11 @@ function Pin({pin}) {
             item?.postedBy._id === user
         ))
 
-        if(Array.isArray(savedOrNot)){
-            return savedOrNot.length > 0 ? true : false
-        }else{
-            return false
-        }
+        // if(Array.isArray(savedOrNot)){
+            return savedOrNot?.length > 0 ? true : false
+        // }else{
+        //     return false
+        // }
     }
 
     function savePin(id){
@@ -66,7 +66,8 @@ function Pin({pin}) {
                         {hasUserSavedMe() 
                             ? (<button 
                                 type="button" 
-                                className="bg-blue-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-lg outline-none hover:shadow-md"
+                                disabled
+                                className="cursor-not-allowed bg-blue-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-lg outline-none hover:shadow-md"
                                 >
                                     Pin Saved
                                 </button>
