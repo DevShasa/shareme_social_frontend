@@ -15,6 +15,7 @@ export const getFeed = ()=>{
             asset->{url}
         },
         _id,
+        destination,
         postedBy->{
             _id,
             userName,
@@ -43,6 +44,7 @@ export const getSearchQuery=(searchTerm)=>{
             asset->{url}
         },
         _id,
+        destination,
         postedBy->{
             _id,
             userName,
