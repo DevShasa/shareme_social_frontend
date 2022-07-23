@@ -57,7 +57,9 @@ function Pin({pin}) {
     }
 
     function deletePin(id){
-        console.log(`Deleting: ${id}`)
+        client.delete(id).then(()=>{
+            window.location.reload()
+        })
     }
 
     return (
@@ -90,7 +92,7 @@ function Pin({pin}) {
                                     disabled
                                     className="cursor-not-allowed bg-blue-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-full outline-none hover:shadow-md h-fit"
                                     >
-                                        {savedPinArray()} Pin Saved 
+                                        {pin?.save?.length} Saved 
                                     </button>
                                     )
                                 : (
@@ -102,7 +104,7 @@ function Pin({pin}) {
                                         type="button"
                                         className="bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-full hover:shadow-md outline-none h-fit"
                                     >
-                                        Save Post
+                                        {savingPost ? "Saving post" : "Save Post"}
                                     </button>
                                 )
                             }
@@ -127,7 +129,7 @@ function Pin({pin}) {
                                         e.stopPropagation();
                                         deletePin(pin?._id);
                                     }}
-                                    className="outline-none p-2 bg-white rounded-full text-xs opacity-75 hover:opacity-100 w-8 h-8 flex items-center justify-center"
+                                    className="outline-none p-2 bg-white rounded-full text-xs opacity-75 hover:opacity-100 w-8 h-8 flex items-center justify-center ml-auto"
                                 >
                                     <AiTwotoneDelete />
                                 </button>
