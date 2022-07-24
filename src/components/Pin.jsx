@@ -21,20 +21,15 @@ function Pin({pin}) {
         user = JSON.parse(localStorage.getItem("subjectId"))
     }
 
-
     function savedPinArray(){
-        let savedOrNot = []
-        savedOrNot = pin?.save?.filter((item)=>(
-            item?.postedBy._id === user
-        ))
-        
-        // if the array is greater than one that means the user has saved the pin
-        return savedOrNot?.length 
-
+        // return true for the whole array if one item meets condition
+        return pin?.save?.some((item) =>( item?.postedBy._id === user))
     }
 
     function savePin(id){
-        if(savedPinArray() === 0 ){
+        if(!savedPinArray() ){
+            // pin's saved array does not have user id ..
+            // thus user has not saved pin
             setSavingPost(true)
 
             client
@@ -86,7 +81,7 @@ function Pin({pin}) {
                                 </a>
                             </div>
 
-                            {savedPinArray() > 0
+                            {savedPinArray()
                                 ? (<button 
                                     type="button" 
                                     disabled
