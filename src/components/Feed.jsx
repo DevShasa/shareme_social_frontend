@@ -31,14 +31,15 @@ const Feed = () => {
 
     if(loading){
         return (
-            <Spinner  message={`Adding new ideas to your feed`} />
+            <Spinner  message={`Loading feed`} />
         );
     }
 
     return (
         <div>
             {pins &&(
-                <MasonryLayout pins={pins}/>
+                // setloading is passed to masonry and then to pin for use in delete function
+                <MasonryLayout pins={pins} setLoading={setLoading}/>
             )}
         </div>
     )

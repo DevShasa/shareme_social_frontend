@@ -7,7 +7,7 @@ import { BsFillArrowUpRightCircleFill } from 'react-icons/bs';
 import { client, urlFor } from "../sanity/client"
 
 
-function Pin({pin}) {
+function Pin({pin, setLoading}) {
 
     const navigate = useNavigate()
     const [postHover, setPostHover] = useState(false)
@@ -52,8 +52,13 @@ function Pin({pin}) {
     }
 
     function deletePin(id){
+        //TODO move array of pins to redux store
+        // Make delete request in thunk then request new array and update store
+        // To prevent stale data persisting in app
+        setLoading(true)
         client.delete(id).then(()=>{
             window.location.reload()
+            setLoading(false)
         })
     }
 
