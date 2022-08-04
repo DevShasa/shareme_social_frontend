@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, Link } from "react-router-dom";
 import { RiHome2Fill } from "react-icons/ri";
 import  { IoIosArrowForward } from "react-icons/io"
-import logo from "../assets/logo.png"
-import { fetchCategories } from "../utils/sanityDataFetch";
-import { client } from "../sanity/client";
+import logo from "../assets/logo.png";
+import { useSelector, useDispatch } from "react-redux";
+import {  
+    getAllCategories,
+    categoriesFromStore,
+    categoryFetchStatus,
+    // categoryFetchError
+} from "../reduxStore/dataSlices/categorySlice";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
@@ -14,15 +19,18 @@ const isNotActiveStyle = "flex items-center px-5 gap-5  text-gray-500 hover:text
 
 const Sidebar = ({ closeToggle, user }) => {
 
+    const categoryList = useSelector(categoriesFromStore);
+    const status = useSelector(categoryFetchStatus);
+    const dispatch = useDispatch()
     const [ categories, setCategories ] = useState([])
 
     useEffect(()=>{
-        const query = fetchCategories();
-        client.fetch(query).then((data)=>{
-            const dataMinusOther = data.filter(item =>item.categoryTitle !== "others")
-            setCategories(dataMinusOther)
-        })
-    },[])
+        if(status === "idle"){
+            dispatch(getAllCategories())
+        }if(status ==="success"){
+            setCategories(categoryList?.filter(item => item.categoryTitle !== "others"))
+        }
+    },[status,categoryList, dispatch ])
 
     const handleCloseSidebar = ()=>{
         // Check if closetoggle was passed by the parent(desktop div does not pass closeToggle)
@@ -53,9 +61,9 @@ const Sidebar = ({ closeToggle, user }) => {
                         <h3 className="mt-2 px-5 text-base 2xl:text-lg">Discover Categories</h3>
 
 
-                        {categories.length !== 0 
+                        {categories?.length !== 0 
                             ? (
-                                categories.map((category)=>(
+                                categories?.map((category)=>(
                                     <NavLink key={category._id} className={({isActive})=>(isActive ? isActiveStyle : isNotActiveStyle)}
                                         to={`/category/${category.categoryTitle}`}
                                         onClick={handleCloseSidebar}
