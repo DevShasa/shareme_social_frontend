@@ -26,7 +26,7 @@ const CreatePin = ({ user }) => {
     const uploadImage = (e)=>{
         const selectedFile = e.target.files[0]
         console.log('FILE->>>>',selectedFile)
-        const correctFIleType = selectedFile.type === 'image/png' || selectedFile.type === 'image/jpeg' || selectedFile.type === 'image/gif' || selectedFile.type === 'image/jpg'
+        const correctFIleType = selectedFile.type === 'image/png' || selectedFile.type === 'image/jpeg' || selectedFile.type === 'image/gif' || selectedFile.type === 'image/jpg'|| selectedFile.type === 'image/webp'
         if(correctFIleType){
             setFileNotAnImage(false)
             setLoading(true)
@@ -61,6 +61,7 @@ const CreatePin = ({ user }) => {
 
     const createNewPin = ()=>{
         if(allfieldsArePresent){
+            setLoading(true)
             const doc = {
                 _type: 'pin',
                 title, about, destination,
@@ -83,6 +84,7 @@ const CreatePin = ({ user }) => {
             }
             client.create(doc).then((data)=>{
                 console.log("DATA UPLOADED TO SANITY------>", data)
+                setLoading(false)
                 navigate("/")
             })            
         }else{
@@ -188,7 +190,7 @@ const CreatePin = ({ user }) => {
                             <button type="button"
                                 onClick = {createNewPin}
                                 className='bg-red-500 text-white font-bold p-2 rounded-full w-28 outline-none'
-                                disabled = {allfieldsArePresent}
+                                disabled = {!allfieldsArePresent}
                                 style={{ cursor: allfieldsArePresent ? "pointer" : "not-allowed"}}
                             >
                                 Save Pin
