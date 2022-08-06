@@ -1,13 +1,19 @@
 import {useState, useEffect} from 'react';
 import { pinDetailQuery, getSimilarPins } from "../utils/sanityDataFetch";
 import { client, urlFor } from '../sanity/client';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import { MdDownloadForOffline } from 'react-icons/md';
+import { v4 as uuidv4 } from 'uuid';
+import MasonryLayout from "./MasonryLayout";
+import Spinner from "./Spinner";
 
 const PinDetail = () => {
 
     const { pinId } = useParams()
-    const [pinDetail, setPinDetail] = useState()
+    const [pinDetail, setPinDetail] = useState([])
     const [similarPins, setSimilarPins] = useState()
+    const [ comment, setComment ] = useState("")
+    const [addingNewComment, setAddingNeComment] = useState(false)
 
     const fetchPinDetails = ()=>{
         const query = pinDetailQuery(pinId)
@@ -33,8 +39,31 @@ const PinDetail = () => {
         fetchPinDetails()
     },[pinId])
 
+    const addComment = ()=>{
+
+    }
+
+    if(!pinDetail) return <Spinner message="...Loading pin..."/>
+    
+
     return (
-        <div>PinDetail</div>
+        <>
+            {pinDetail.length !== 0 && (
+                // xl => @media (max-width: 1279px)
+                <div className="flex flex-col xl:flex-row bg-white" style={{maxWidth:'1500px', borderRadius:'32px'}}>
+                    <div className="flex justify-center items-center md:items-start" id="nicheki">
+                        <img 
+                            className="rounded-t-3xl rounded-b-lg"
+                            src={(pinDetail?.image && urlFor(pinDetail?.image).url())}
+                            alt="user-post"
+                        />
+                    </div>
+                    <div className='w-full p-5 flex-1 xl:min-w-620' id="nicheki">
+
+                    </div>
+                </div>
+            )}
+        </>
     )
 }
 
