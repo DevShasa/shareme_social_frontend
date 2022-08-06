@@ -65,3 +65,32 @@ export const getSearchQuery=(searchTerm)=>{
         }
     `;
 }
+
+export const pinDetailQuery = (pinId)=>{
+    return`
+    *[_type =="pin" && _id == ${pinId}]{
+        image{
+            asset->{url}
+        },
+        _id, title, about, destination,
+        category->{ categoryTitle, _id, categoryImage},
+        postedBy->{ _id, userName, userImgUrl },
+        save[]{postedBy->{_id, userName,userImgUrl}},
+        comments[]{comment, _key,postedBy->{_id, userName, userImgUrl}}
+    }
+    `
+}
+
+export const getSimilarPins = (categoryTitle, pinId)=>{
+    return`
+    *[_type =="pin" && category->categoryTitle match ${categoryTitle} && _id != ${pinId}]{
+        image{
+            asset->{url}
+        },
+        _id, title, about, destination,
+        category->{ categoryTitle, _id, categoryImage},
+        postedBy->{ _id, userName, userImgUrl },
+        save[]{_key, postedBy->{_id, userName,userImgUrl}},
+    }
+    `
+}
