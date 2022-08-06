@@ -68,7 +68,7 @@ export const getSearchQuery=(searchTerm)=>{
 
 export const pinDetailQuery = (pinId)=>{
     return`
-    *[_type =="pin" && _id == ${pinId}]{
+    *[_type =="pin" && _id == "${pinId}"]{
         image{
             asset->{url}
         },
@@ -83,7 +83,7 @@ export const pinDetailQuery = (pinId)=>{
 
 export const getSimilarPins = (categoryTitle, pinId)=>{
     return`
-    *[_type =="pin" && category->categoryTitle match ${categoryTitle} && _id != ${pinId}]{
+    *[_type =="pin" && category->categoryTitle match "${categoryTitle}" && _id != "${pinId}"]{
         image{
             asset->{url}
         },
