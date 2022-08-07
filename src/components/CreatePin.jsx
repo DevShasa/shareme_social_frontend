@@ -150,6 +150,7 @@ const CreatePin = ({ user }) => {
                                 src={user.userImgUrl}
                                 alt="user-profile"
                                 className="w-10 h-10 rounded-full"
+                                referrerPolicy="no-referrer"
                             />
                             <p className="font-bold">{user.userName}</p>
                         </div>
