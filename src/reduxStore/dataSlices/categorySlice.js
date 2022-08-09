@@ -12,13 +12,11 @@ export const getAllCategories = createAsyncThunk('categories/fetchAll', async(_,
     try{
         const fetchQuery = fetchCategories()
         const response = await client.fetch(fetchQuery)
-        console.log("ASYNCFETCHSUCCESS",response)
         return response
     }catch(error){
         console.log('error---->', error)
         console.log('data---->', error.response.data)
         return rejectWithValue(error.response.data)
-
     }
 })
 

@@ -1,49 +1,98 @@
 import {useState, useEffect} from 'react';
-import { pinDetailQuery, getSimilarPins } from "../utils/sanityDataFetch";
+// import { pinDetailQuery, getSimilarPins } from "../utils/sanityDataFetch";
 import { client, urlFor } from '../sanity/client';
 import { useParams, Link } from 'react-router-dom';
 import { MdDownloadForOffline } from 'react-icons/md';
+import { AiOutlineDelete } from "react-icons/ai";
 import { v4 as uuidv4 } from 'uuid';
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
 
+
+import { useSelector, useDispatch } from 'react-redux';
+import {  
+    detail,
+    comments,
+    similar,
+    pinLoadingStatus,
+    similarPinsStatus,
+    getPinDetails,
+    getPinsWithSimilarCategory,
+}from "../reduxStore/dataSlices/pinDetailSlice"
+
 const PinDetail = ({user}) => {
 
+    const pinDetail = useSelector(detail)
+    const similarPins = useSelector(similar)
+    const pinComments = useSelector(comments)
+    const pinLoading = useSelector(pinLoadingStatus)
+    const similarLoading = useSelector(similarPinsStatus)
+
     const { pinId } = useParams()
-    const [pinDetail, setPinDetail] = useState([])
-    const [similarPins, setSimilarPins] = useState([])
+    // const [pinDetail, setPinDetail] = useState([])
+    // const [similarPins, setSimilarPins] = useState([])
     const [ comment, setComment ] = useState("")
     const [addingNewComment, setAddingNeComment] = useState(false)
 
-    const fetchPinDetails = ()=>{
-        const query = pinDetailQuery(pinId)
-        if(query){
-            // get the pin using pin id
-            client.fetch(query).then((data)=>{
-                console.log('PIN DATA FETCHED----->', data)
-                setPinDetail(data[0])
+    const dispatch = useDispatch()
 
-                // if pin has been sucessfuly fetched get pins with similar categories
-                if(data[0]){
-                    const query2 = getSimilarPins(data[0].category.categoryTitle, pinId)
-                    client.fetch(query2).then((response)=>{
-                        console.log("these are the similar pins", response)
-                        setSimilarPins(response)
-                    })
-                }
+
+    useEffect(()=>{
+        
+        if(pinLoading === "idle" || pinId !==  pinDetail._id){
+            dispatch(getPinDetails(pinId))
+        }
+
+        if(pinLoading === "success"){
+            dispatch(getPinsWithSimilarCategory({
+                categoryTitle: pinDetail.category.categoryTitle,
+                pinId
+            }))
+        }
+
+    },[pinId, dispatch, pinDetail, pinLoading])
+
+    const deleteComment = (key) =>{
+        client
+            .patch(pinId)
+            .unset([`comments[_key=="${key}"]`])
+            .commit()
+            .then((data)=>{
+                // fetchPinDetails()
+                console.log("delete successful: ", data.comments)
             })
+    }
+
+    const addComment = ()=>{
+        if(comment){
+            setAddingNeComment(true)
+            client
+                .patch(pinId)
+                .setIfMissing({comments:[]})
+                .insert('after', 'comments[-1]',[{
+                    comment,
+                    _key:uuidv4(),
+                    postedBy:{
+                        _type: 'postedBy',
+                        _ref:user._id
+                    }}]
+                )
+                .commit()
+                .then((data)=>{
+                    setTimeout(
+                        ()=>{
+                            console.log("Added comment: ", data.comments)
+                            // fetchPinDetails()
+                            setAddingNeComment(false)
+                            setComment("")
+                        },
+                        5000
+                    )
+                })
         }
     }
 
-    useEffect(()=>{
-        fetchPinDetails()
-    },[pinId])
-
-    const addComment = ()=>{
-
-    }
-
-    if(!pinDetail) return <Spinner message="...Loading pin..."/>
+    if(pinLoading === "pending") return <Spinner message="...Loading pin..."/>
     
 
     return (
@@ -112,6 +161,14 @@ const PinDetail = ({user}) => {
                                                 <p className="font-bold">{comment?.postedBy?.userName}</p>
                                                 <p>{comment.comment}</p>
                                             </div>
+
+                                            {comment?.postedBy?._id === user?._id && (
+                                                <div className="ml-auto p-3 rounded-full border hover:border hover:border-black cursor-pointer"
+                                                    onClick={()=>deleteComment(comment?._key)}
+                                                >
+                                                    <AiOutlineDelete />
+                                                </div>
+                                            )}
 
                                         </div>
                                     ))}
