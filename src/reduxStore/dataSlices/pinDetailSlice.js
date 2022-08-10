@@ -7,7 +7,8 @@ const initialState = {
     pinComments: [],
     similarPins: [],
     pinRequestStatus: 'idle', //idle, pending, success, failed
-    newCommentStatus: false
+    newCommentStatus: false,
+    deleteCommentStatus: false
 }
 
 export const getPinDetails = createAsyncThunk('pin/getPinData', async(pinId, {rejectWithValue})=>{
@@ -70,6 +71,24 @@ export const createNewComment = createAsyncThunk('pin/addNewComment', async(newC
     }
 })
 
+const deleteComment = createAsyncThunk('pin/deleteComment',async(deleteCommentObj, {rejectWithValue})=>{
+    try{
+        const { pinId, commentKey } = deleteCommentObj
+        const response = await client
+                                .patch(pinId)
+                                .unset([`comments[_key=="${commentKey}"]`])
+                                .commit()
+        if(response._id === pinId){
+            return { commentKey }
+        }
+    }catch(error){
+        console.log('error---->', error)
+        console.log('data---->', error.response.data)
+        return rejectWithValue(error.response.data)
+    }
+
+})
+
 const pinSlice = createSlice({
     name: "pin",
     initialState,
@@ -97,6 +116,16 @@ const pinSlice = createSlice({
                 state.newCommentStatus = false
                 state.pinComments.push(action.payload) 
             })
+            .addCase(deleteComment.pending, (state, action)=>{
+                state.deleteCommentStatus = true
+            })
+            .addCase(deleteComment.fulfilled, (state, action)=>{
+                state.deleteCommentStatus = false
+                const { commentKey } = action.payload
+                state.pinComments = state.pinComments.filter((c)=>(
+                    c._key !== commentKey
+                ))
+            })
     }
 
 })
@@ -107,3 +136,4 @@ export const comments = (state)=> state.pin.pinComments
 export const similar = (state) => state.pin.similarPins
 export const pinLoadingStatus = (state) => state.pin.pinRequestStatus
 export const commentStatus = (state) => state.pin.newCommentStatus
+export const deletingComment = (state)=> state.pin.deleteCommentStatus
