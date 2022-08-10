@@ -74,11 +74,11 @@ const CreatePin = ({ user }) => {
                 },
                 userId: user._id,
                 postedBy:{
-                    _type:'reference',
+                    _type:'postedBy',
                     _ref:user._id 
                 },
                 category:{
-                    _type:'reference',
+                    _type:'assocCategory',
                     _ref: category
                 }
             }

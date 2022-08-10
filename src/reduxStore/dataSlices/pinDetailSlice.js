@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, nanoid } from "@reduxjs/toolkit";
 import { client } from "../../sanity/client";
 import { pinDetailQuery, getSimilarPins  } from "../../utils/sanityDataFetch";
 
@@ -7,7 +7,7 @@ const initialState = {
     pinComments: [],
     similarPins: [],
     pinRequestStatus: 'idle', //idle, pending, success, failed
-    similarPinsRquestStatus: 'idle'
+    newCommentStatus: false
 }
 
 export const getPinDetails = createAsyncThunk('pin/getPinData', async(pinId, {rejectWithValue})=>{
@@ -27,6 +27,42 @@ export const getPinsWithSimilarCategory = createAsyncThunk('pin/getSmiliarPins',
         const query = getSimilarPins( categoryTitle, pinId)
         const response = await client.fetch(query)
         return response
+    }catch(error){
+        console.log('error---->', error)
+        console.log('data---->', error.response.data)
+        return rejectWithValue(error.response.data)
+    }
+})
+
+export const createNewComment = createAsyncThunk('pin/addNewComment', async(newCOmmentObj, {rejectWithValue})=>{
+    try{
+        const { comment, pinId, user } = newCOmmentObj
+        const _key = nanoid()
+        const result  = await client
+                                .patch(pinId)
+                                .setIfMissing({comments:{}})
+                                .insert('after', 'comments[-1]',[{
+                                    comment,
+                                    _key,
+                                    postedBy:{
+                                        _type: 'postedBy',
+                                        _ref: user._id
+                                    }
+                                }])
+                                .commit()
+        console.log("ADDING A NEW COMMENT",result)
+        if(result._id === pinId){
+            return {
+                _key,
+                comment,
+                postedBy:{
+                    _id: user._id,
+                    userImgUrl: user.userImgUrl,
+                    userName: user.userName
+                }
+            }
+        }
+
     }catch(error){
         console.log('error---->', error)
         console.log('data---->', error.response.data)
@@ -54,6 +90,13 @@ const pinSlice = createSlice({
                 state.similarPinsRquestStatus = "success"
                 state.similarPins = action.payload
             })
+            .addCase(createNewComment.pending, (state, action)=>{
+                state.newCommentStatus = true 
+            })
+            .addCase(createNewComment.fulfilled, (state, action)=>{
+                state.newCommentStatus = false
+                state.pinComments.push(action.payload) 
+            })
     }
 
 })
@@ -63,4 +106,4 @@ export const detail = (state) => state.pin.pin
 export const comments = (state)=> state.pin.pinComments
 export const similar = (state) => state.pin.similarPins
 export const pinLoadingStatus = (state) => state.pin.pinRequestStatus
-export const similarPinsStatus = (state) => state.pin.similarPinsRquestStatus
+export const commentStatus = (state) => state.pin.newCommentStatus

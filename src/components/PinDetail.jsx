@@ -4,7 +4,6 @@ import { client, urlFor } from '../sanity/client';
 import { useParams, Link } from 'react-router-dom';
 import { MdDownloadForOffline } from 'react-icons/md';
 import { AiOutlineDelete } from "react-icons/ai";
-import { v4 as uuidv4 } from 'uuid';
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
 
@@ -15,9 +14,10 @@ import {
     comments,
     similar,
     pinLoadingStatus,
-    similarPinsStatus,
+    commentStatus,
     getPinDetails,
     getPinsWithSimilarCategory,
+    createNewComment,
 }from "../reduxStore/dataSlices/pinDetailSlice"
 
 const PinDetail = ({user}) => {
@@ -26,20 +26,18 @@ const PinDetail = ({user}) => {
     const similarPins = useSelector(similar)
     const pinComments = useSelector(comments)
     const pinLoading = useSelector(pinLoadingStatus)
-    const similarLoading = useSelector(similarPinsStatus)
+    const commentLoading = useSelector(commentStatus)
 
     const { pinId } = useParams()
     // const [pinDetail, setPinDetail] = useState([])
     // const [similarPins, setSimilarPins] = useState([])
     const [ comment, setComment ] = useState("")
-    const [addingNewComment, setAddingNeComment] = useState(false)
-
     const dispatch = useDispatch()
 
 
     useEffect(()=>{
         
-        if(pinLoading === "idle" || pinId !==  pinDetail._id){
+        if(pinLoading === "idle" || pinId !==  pinDetail?._id){
             dispatch(getPinDetails(pinId))
         }
 
@@ -65,30 +63,8 @@ const PinDetail = ({user}) => {
 
     const addComment = ()=>{
         if(comment){
-            setAddingNeComment(true)
-            client
-                .patch(pinId)
-                .setIfMissing({comments:[]})
-                .insert('after', 'comments[-1]',[{
-                    comment,
-                    _key:uuidv4(),
-                    postedBy:{
-                        _type: 'postedBy',
-                        _ref:user._id
-                    }}]
-                )
-                .commit()
-                .then((data)=>{
-                    setTimeout(
-                        ()=>{
-                            console.log("Added comment: ", data.comments)
-                            // fetchPinDetails()
-                            setAddingNeComment(false)
-                            setComment("")
-                        },
-                        5000
-                    )
-                })
+            dispatch(createNewComment({ comment, pinId, user }))
+            setComment("")
         }
     }
 
@@ -144,10 +120,10 @@ const PinDetail = ({user}) => {
                         </Link>
                         
                         <h2 className='mt-5 text-2xl'>Comments</h2>
-                        {pinDetail?.comments
+                        {pinComments?.length !== 0
                             ? (
                                 <div className='max-h-370 overflow-y-auto'>
-                                    {pinDetail?.comments?.map((comment)=>(
+                                    {pinComments?.map((comment)=>(
                                         <div className="flex gap-2 mt-5 items-center bg-white rounded-lg" key={comment?._key}>
 
                                             <img 
@@ -197,7 +173,7 @@ const PinDetail = ({user}) => {
                                 className="bg-red-500 text-white rounded-full px-6 py-2 font-semibold text-base outline-none"
                                 onClick = {addComment}
                             >
-                                {addingNewComment ? "Adding Comment..." : " Done "}
+                                {commentLoading ? "Adding Comment..." : " Done "}
                             </button>
                         </div>
                     </div>
