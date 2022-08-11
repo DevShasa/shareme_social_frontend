@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 // import { pinDetailQuery, getSimilarPins } from "../utils/sanityDataFetch";
-import { client, urlFor } from '../sanity/client';
+import {urlFor } from '../sanity/client';
 import { useParams, Link } from 'react-router-dom';
 import { MdDownloadForOffline } from 'react-icons/md';
 import { AiOutlineDelete } from "react-icons/ai";
@@ -18,6 +18,7 @@ import {
     getPinDetails,
     getPinsWithSimilarCategory,
     createNewComment,
+    deleteComment,
 }from "../reduxStore/dataSlices/pinDetailSlice"
 
 const PinDetail = ({user}) => {
@@ -50,21 +51,19 @@ const PinDetail = ({user}) => {
 
     },[pinId, dispatch, pinDetail, pinLoading])
 
-    const deleteComment = (key) =>{
-        client
-            .patch(pinId)
-            .unset([`comments[_key=="${key}"]`])
-            .commit()
-            .then((data)=>{
-                // fetchPinDetails()
-                console.log("delete successful: ", data.comments)
-            })
+    const deleteCommentFunc = (key) =>{
+        dispatch(deleteComment({
+            pinId,
+            commentKey: key
+        }))
     }
 
     const addComment = ()=>{
         if(comment){
             dispatch(createNewComment({ comment, pinId, user }))
             setComment("")
+        }else{
+            window.alert("Comment cannot be empty")
         }
     }
 
@@ -140,7 +139,7 @@ const PinDetail = ({user}) => {
 
                                             {comment?.postedBy?._id === user?._id && (
                                                 <div className="ml-auto p-3 rounded-full border hover:border hover:border-black cursor-pointer"
-                                                    onClick={()=>deleteComment(comment?._key)}
+                                                    onClick={()=>deleteCommentFunc(comment?._key)}
                                                 >
                                                     <AiOutlineDelete />
                                                 </div>

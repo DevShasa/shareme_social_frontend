@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect } from 'react'
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import shareVideo from "../assets/share.mp4";
@@ -31,6 +31,13 @@ const Login = () => {
             // ... are taken to homepage instead of login page
             .then(()=>{ navigate("/", {replace:true}) })
     }
+
+    useEffect(()=>{
+        // redirect if localstorage is not null
+        if(localStorage.getItem("subjectId")){
+            navigate("/", {replace:true})
+        }
+    },[navigate])
 
     return (
         <div className="flex flex-col justify-start items-center h-screen">

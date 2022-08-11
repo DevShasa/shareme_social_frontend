@@ -41,7 +41,7 @@ export const createNewComment = createAsyncThunk('pin/addNewComment', async(newC
         const _key = nanoid()
         const result  = await client
                                 .patch(pinId)
-                                .setIfMissing({comments:{}})
+                                .setIfMissing({comments:[]})
                                 .insert('after', 'comments[-1]',[{
                                     comment,
                                     _key,
@@ -71,7 +71,7 @@ export const createNewComment = createAsyncThunk('pin/addNewComment', async(newC
     }
 })
 
-const deleteComment = createAsyncThunk('pin/deleteComment',async(deleteCommentObj, {rejectWithValue})=>{
+export const deleteComment = createAsyncThunk('pin/deleteComment',async(deleteCommentObj, {rejectWithValue})=>{
     try{
         const { pinId, commentKey } = deleteCommentObj
         const response = await client
@@ -79,6 +79,7 @@ const deleteComment = createAsyncThunk('pin/deleteComment',async(deleteCommentOb
                                 .unset([`comments[_key=="${commentKey}"]`])
                                 .commit()
         if(response._id === pinId){
+            console.log("deleting commentid: ", commentKey)
             return { commentKey }
         }
     }catch(error){
