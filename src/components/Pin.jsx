@@ -38,7 +38,6 @@ function Pin({pin, setLoading}) {
                 .insert("after", "save[-1]",[
                     {
                         _key:uuidv4(),
-                        userId: user,
                         postedBy:{ _type:"postedBy", _ref:user},
                     },
                 ])

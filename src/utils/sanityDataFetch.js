@@ -94,3 +94,31 @@ export const getSimilarPins = (categoryTitle, pinId)=>{
     }
     `
 }
+
+export const fetchPinsCreatedByUser = (user_id)=>{
+    return `
+    *[_type =="pin" && postedBy->_id match "${user_id}" ]{
+        image{
+            asset->{url}
+        },
+        _id, title, about, destination,
+        category->{ categoryTitle, _id, categoryImage},
+        postedBy->{ _id, userName, userImgUrl },
+        save[]{_key, postedBy->{_id, userName,userImgUrl}},
+        }
+    `
+}
+
+export const fetchPinsSavedByUser = (user_id) =>{
+    return `
+    *[_type =="pin" &&  "${user_id}" in save[].postedBy->_id ]{
+        image{
+            asset->{url}
+        },
+        _id, title, about, destination,
+        category->{ categoryTitle, _id, categoryImage},
+        postedBy->{ _id, userName, userImgUrl },
+        save[]{_key, postedBy->{_id, userName,userImgUrl}},
+    }
+    `
+}
