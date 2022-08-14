@@ -21,11 +21,12 @@ const Home = () => {
     useEffect(()=>{
         if( userInfo ){
             // only fetch data from sanity if userinfo is present
-            const query = userQuery(userInfo);
+            const query = userQuery(JSON.parse(localStorage.getItem("subjectId")));
             client.fetch(query).then((data)=>{
                 setUser(data[0])
             })
         }else{
+            localStorage.clear()
             navigate("/login")
         }
 
