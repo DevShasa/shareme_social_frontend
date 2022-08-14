@@ -17,9 +17,9 @@ import { userQuery } from "../utils/sanityDataFetch";
 import { googleLogout } from "@react-oauth/google";
 
 const activeBtnStyles =
-	"bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none";
+	"bg-red-500 text-white mr-4 font-bold p-2 rounded-full w-20 outline-none border border-black";
 const notactiveBtnStyle =
-	"bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none";
+	"bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none border border-black";
 
 const UserProfile = () => {
 	const dispatch = useDispatch();
@@ -91,6 +91,38 @@ const UserProfile = () => {
 						)}
 					</div>
 				</div>
+				<div className="text-center mb-7">
+							<button
+								type="button"
+								onClick = {(e)=>setPinsToDisplay("Created")}
+								className = {pinsToDisplay === "Created" ? activeBtnStyles : notactiveBtnStyle}
+							>
+								Created
+							</button>
+							<button
+									type="button"
+									onClick = {(e)=>setPinsToDisplay("Saved")}
+									className = {pinsToDisplay === "Saved" ? activeBtnStyles : notactiveBtnStyle}
+							>
+								Saved
+							</button>
+				</div>
+
+				<div className="px-2">
+					<MasonryLayout pins={(pinsToDisplay ==="Created" ? myPins  : mySavedPins)}/>
+				</div>
+
+				{ myPins.length === 0 && (
+					<div className="flex justify-center font-bold  items-center w-full text-1xl mt-2">
+							User has not created any pins!
+					</div>
+				)}
+
+				{ myPins.length === 0 && (
+					<div className="flex justify-center font-bold  items-center w-full text-1xl mt-2">
+							User has not saved any pins!
+					</div>
+				)}
 			</div>
 		</div>
 	);
