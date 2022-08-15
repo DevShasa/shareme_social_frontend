@@ -21,7 +21,7 @@ const Feed = () => {
                 setLoading(false)
             })
         }else{
-            const query = getFeed(categoryId);
+            const query = getFeed();
             setLoading(true)
             client.fetch(query).then((data)=>{
                 setPins(data)

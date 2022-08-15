@@ -3,7 +3,7 @@
 // the search results 
 import React, { useState, useEffect } from 'react';
 import { client } from "../sanity/client";
-import { getFeed, getSearchQuery } from "../utils/sanityDataFetch";
+import { getSearchQuery } from "../utils/sanityDataFetch";
 import Spinner from "./Spinner";
 import MasonryLayout from './MasonryLayout';
 
