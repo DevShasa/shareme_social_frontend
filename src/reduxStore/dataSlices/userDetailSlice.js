@@ -47,6 +47,14 @@ export const getUserSavedPins = createAsyncThunk(
 const userPinsSlice = createSlice({
 	name: "userPins",
 	initialState,
+	reducers :{
+		clearEverything: (state) =>{
+			state.userCreatedPins= []
+			state.userSavedPins= []
+			state.userPinsStatus = "idle"
+			state.userSavedPinsStatus = "idle"
+		}
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(getUserPins.pending, (state) => {
@@ -67,6 +75,8 @@ const userPinsSlice = createSlice({
 });
 
 export default userPinsSlice.reducer;
+export const { clearEverything } = userPinsSlice.actions
+
 export const userPins = (state) => state.userPins.userCreatedPins;
 export const userSaved = (state) => state.userPins.userSavedPins;
 export const userPinsStatus = (state) => state.userPins.userPinsStatus;

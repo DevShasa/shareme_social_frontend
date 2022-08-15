@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
 	userPins,
 	userSaved,
-	userPinsStatus,
-	savedPinsStatus,
+	// userPinsStatus,
+	// savedPinsStatus,
+	clearEverything,
 	getUserPins,
 	getUserSavedPins,
 } from "../reduxStore/dataSlices/userDetailSlice";
@@ -55,6 +56,7 @@ const UserProfile = () => {
 
 	const logout = () => {
 		localStorage.clear();
+		dispatch(clearEverything());
 		googleLogout();
 		navigate("/login");
 	};
