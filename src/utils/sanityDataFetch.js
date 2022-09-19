@@ -122,3 +122,30 @@ export const fetchPinsSavedByUser = (user_id) =>{
     }
     `
 }
+
+/*GROK REFERENCE
+
+*[_type=="bottomSectionContent"]{
+  products[]->{
+    slug,
+    productName, 
+    image,
+    categories[]->{name, image, slug},
+    subCategory->{name, slug}
+  }
+}
+
+---all categorues
+*[_type=="category"]{ name, slug}
+
+---all subcategories that belong to a certain category 
+*[_type=="subCategory" && parentCategory->name match "Computing"]{
+  parentCategory->{name, slug}
+}
+
+--all products that belong to a certain subcategory 
+*[_type=="product" && subCategory->name match "PlayStation "]{
+   subCategory->{name, slug}
+}
+
+*/
